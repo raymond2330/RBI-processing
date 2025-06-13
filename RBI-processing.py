@@ -11,6 +11,12 @@ df = xls.parse(xls.sheet_names[0])
 df_cleaned = df.dropna(how='all')  # Drop rows that are completely empty
 df_cleaned = df_cleaned[df_cleaned['LAST'] != 'HOUSEHOLD MEMBER/S']  # Remove internal headers
 
+# Map 'SEX' column: 'M' -> 'Male', 'F' -> 'Female'
+df_cleaned['SEX'] = df_cleaned['SEX'].map({'M': 'Male', 'F': 'Female'}).fillna(df_cleaned['SEX'])
+
+# Map 'CIVIL STATUS' column: 'Single' -> 'S', 'Married' -> 'M'
+df_cleaned['CIVIL STATUS'] = df_cleaned['CIVIL STATUS'].map({'S': 'Single', 'M': 'Married'}).fillna(df_cleaned['CIVIL STATUS'])
+
 # Step 2: Create a new column indicating if the person is the household head
 df_cleaned['Is Household Head'] = df_cleaned['RELATIONSHIP TO HOUSEHOLD HEAD'].apply(
     lambda x: 'Yes' if isinstance(x, str) and x.strip().lower() == 'household head' else 'No'
